@@ -1,8 +1,9 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import axios from "axios";
 
 import { Button } from './Styled';
 import { error } from 'console';
+
 
 
 
@@ -14,6 +15,8 @@ function Cep() {
     const [cidade, setCidade] = useState<string>('')
     const [uf, setUf] = useState<string>('')
 
+    const [naoEncontrado, setNaoEncontrado] = useState<boolean>(false)
+
     function buscarCep(){
        axios.get(`https://viacep.com.br/ws/${cep}/json/`).then((response) => {
         setLogradouro(response.data.logradouro)
@@ -21,14 +24,19 @@ function Cep() {
         setCidade(response.data.localidade)
         setUf(response.data.uf)
        }).catch((erro) => {
-        console.log(erro)
-       } )
+        setNaoEncontrado(true)
+       })
     }
 
     function validaCampos(){
-      return logradouro.trim() !== '' && bairro.trim() !== "" && cidade.trim() !== ""
+      return logradouro && bairro && cidade && logradouro.trim() !== '' && bairro.trim() !== "" && cidade.trim() !== ""
+    }
+
+    function invalidoCampos(){
+      return logradouro && bairro && cidade && logradouro.trim() == undefined && bairro.trim() == undefined && cidade.trim() == undefined
     }
     
+
 
     return (
       <div>
@@ -39,21 +47,30 @@ function Cep() {
 
             
             <Button onClick={() => buscarCep()}>Buscar</Button>
+            
+            
         </span>
 
         <span>
             <ul>
-              {validaCampos() && <>
+              {validaCampos() && !naoEncontrado && <>
                 <li>Logradouro: {logradouro}</li>
                 <li>Bairro: {bairro}</li>
                 <li>Cidade: {cidade}</li>
                 <li>UF: {uf}</li>
               </>}
 
-              {!validaCampos() && <>
-              Esperando um CEP para analisar 😎
+              {invalidoCampos() && naoEncontrado && <>
+                CEP não encontrado! 👀
+              </>}
+
+              {!validaCampos() && !naoEncontrado && <>
+                Esperando um CEP válido para analisar 😎
               </>}
                 
+              {naoEncontrado  && <>
+                CEP não encontrado! 👀
+              </>}
             </ul>
         </span>
 
