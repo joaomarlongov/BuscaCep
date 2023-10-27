@@ -1,10 +1,11 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import axios from "axios";
 
 import { Button } from './Styled';
-import { error } from 'console';
 
+import './style.scss'
 
+import { FaSearchLocation } from "react-icons/fa";
 
 
 function Cep() {
@@ -39,19 +40,21 @@ function Cep() {
 
 
     return (
-      <div>
+      <div className='Cep'>
         <h1>Buscar CEP</h1>
 
-        <span>
+        <span className='span-1'>
             <input value={cep} onChange={((e) => setCep(e.target.value))}  type="text" placeholder='Digite um CEP'/>
 
             
-            <Button onClick={() => buscarCep()}>Buscar</Button>
+            <Button onClick={() => buscarCep()}>
+              <FaSearchLocation style={{marginLeft:"2px"}}/>
+            </Button>
             
             
         </span>
 
-        <span>
+        <span className='result'>
             <ul>
               {validaCampos() && !naoEncontrado && <>
                 <li>Logradouro: {logradouro}</li>
